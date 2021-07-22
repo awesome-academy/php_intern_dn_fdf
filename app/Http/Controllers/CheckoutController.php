@@ -9,16 +9,33 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\CheckoutRequest;
+use App\Repositories\Cart\ICartRepository;
+use App\Repositories\User\IUserRepository;
+use App\Repositories\Order\IOrderRepository;
 
 class CheckoutController extends Controller
 {
+    protected $cartRepository;
+    protected $userRepository;
+    protected $orderRepository;
+
+    public function __construct(
+        ICartRepository $cartRepository,
+        IUserRepository $userRepository,
+        IOrderRepository $orderRepository
+    ) {
+        $this->cartRepository = $cartRepository;
+        $this->userRepository = $userRepository;
+        $this->orderRepository = $orderRepository;
+    }
+
     public function index()
     {
-        $user = Auth::guard('web')->user();
+        $user = $this->userRepository->currentUser();
 
         $cities = City::select('name')->get();
 
-        $cart = new Cart(session()->get('cart'));
+        $cart = $this->cartRepository->getCurrentCart();
 
         return view('checkout', compact('user', 'cities', 'cart'));
     }
@@ -31,9 +48,7 @@ class CheckoutController extends Controller
             ], 401);
         }
 
-        $cart = new Cart(session()->get('cart'));
-
-        if (!$cart->items) {
+        if ($this->cartRepository->checkCartIsEmpty()) {
             return response()->json([
                 'message' => trans('checkout.cart_is_empty'),
             ], 200);
@@ -42,21 +57,11 @@ class CheckoutController extends Controller
         DB::beginTransaction();
 
         try {
-            $order = Auth::guard('web')->user()->orders()->create([
-                'status' => config('app.status_order.pending'),
-            ]);
+            $cart = $this->cartRepository->getCurrentCart();
 
-            foreach (session()->get('cart')->items as $item) {
-                $order->orderDetails()->attach($item->id, [
-                    'quantity' => $item->quantity,
-                ]);
-            }
-
-            // send mail
+            $this->orderRepository->handleCheckout($cart);
 
             DB::commit();
-
-            session()->forget('cart');
 
             return response()->json([
                 'message' => trans('checkout.success'),

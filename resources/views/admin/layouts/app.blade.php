@@ -50,6 +50,10 @@
                     <a class="nav-link" href="{{ route('admin.categories.index') }}"><i class="fa fa-list-alt fa-sm fa-fw mr-2 text-gray-400"></i><span>@lang('categories.categories')</span></a>
                 </li>
 
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('admin.orders.index') }}"><i class="fa fa-list-alt fa-sm fa-fw mr-2 text-gray-400"></i><span>@lang('order.orders')</span></a>
+                </li>
+
                 <hr class="sidebar-divider">
 
                 <li class="nav-item">
