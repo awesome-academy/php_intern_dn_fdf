@@ -13,10 +13,12 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Application Avatar Path
+    | Application Number Of litmit product in home
     |--------------------------------------------------------------------------
     |
     */
+
+    'number_limit_product' => '6',
 
     'avatar_path' => 'avatar_path',
 

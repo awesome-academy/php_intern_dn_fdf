@@ -124,7 +124,10 @@ class CategoryController extends Controller
             $category->suggestProducts()->delete();
 
             foreach ($category->products as $product) {
-                $product->images->delete();
+                $product->ratings()->detach();
+                $product->images()->delete();
+                $product->orderDetails()->detach();
+                $product->favoriteProducts()->detach();
             }
 
             $category->products()->delete();
