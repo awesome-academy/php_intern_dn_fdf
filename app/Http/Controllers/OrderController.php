@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use Illuminate\Http\Request;
+use App\Events\SendMailOrderUser;
 use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
@@ -36,6 +37,8 @@ class OrderController extends Controller
 
         $order->status = config('app.status_order.cancel');
         $order->save();
+
+        event(new SendMailOrderUser($order));
 
         $order->totalPrice = $order->total_price;
 

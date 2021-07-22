@@ -74,4 +74,18 @@ return [
     'order_date' => 'Ngày đặt hàng',
     'cancel_order' => 'Huỷ đơn hàng',
     'product_id' => 'Mã sản phẩm',
+
+    'interest_products' => 'Sản phẩm quan tâm',
+    'desc_interested' => 'Các sản phẩm mà khách hàng quan tâm nhất',
+
+    'best_selling' => 'Các Sản Phẩm Bán Chạy Nhất',
+    'desc_best_selling' => 'Các sản phẩm được khách hàng mua nhiều nhất',
+
+    'email-exist' => 'Email đã tồn tại trong hệ thống.',
+    'back-to-home' => 'Trở về trang chủ',
+
+    'thank-mail' => 'Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi !',
+    'your-product-bought' => 'Các sản phẩm đã thanh toán',
+    'your-order-done' => 'Đơn hàng của bạn đã thành công',
+    'your-order-cancel' => 'Đơn hàng của bạn đã bị huỷ',
 ];

@@ -75,4 +75,17 @@ return [
     'canceld_order' => 'Cancel order',
     'productd_id' => 'Product ID',
 
+    'interest_products' => 'Interested products',
+    'desc_interested' => 'The products that customers are most interested in',
+
+    'best_selling' => 'Best selling products',
+    'desc_best_selling' => 'The products that customers are most bought',
+
+    'email_exist' => 'Email already taken.',
+    'back_to_home' => 'Back to Home',
+
+    'thank_mail' => 'Thank you for using our service !',
+    'your_product_bought' => 'You bought products',
+    'your_order_done' => 'Your order has been completed',
+    'your_order_cancel' => 'Your order has been canceled',
 ];

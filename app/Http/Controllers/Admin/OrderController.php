@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\OrderRequest;
 use App\Models\Order;
 use Illuminate\Http\Request;
+use App\Events\SendMailOrderUser;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\StatusRequest;
 
 class OrderController extends Controller
 {
@@ -73,7 +74,7 @@ class OrderController extends Controller
      * @param  \App\Models\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function update(OrderRequest $request, Order $order)
+    public function update(StatusRequest $request, Order $order)
     {
         if ($request->old_status !== config('app.status_order.pending')) {
             return redirect()->back()->with('error-message', trans('order.no_access'));
@@ -81,7 +82,9 @@ class OrderController extends Controller
             $order->status = $request->status;
             $order->save();
 
-            return redirect()->back()->with('message', trans('order.update_order_success'));
+            event(new SendMailOrderUser($order));
+
+            return redirect()->back()->with('message', trans('order.update-order-success'));
         }
     }
 
