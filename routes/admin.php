@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\ImageProductController;
+use App\Http\Controllers\Admin\SuggestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,6 +44,14 @@ Route::namespace('Admin')->name('admin.')->group(function () {
             'show',
             'update',
         ]);
+
+        Route::resource('suggests', '\App\Http\Controllers\Admin\SuggestController')->only([
+            'index',
+            'show',
+        ]);
+
+        Route::put('/suggests/{suggest}/approve', [SuggestController::class, 'approve'])->name('suggest.approve');
+        Route::put('/suggests/{suggest}/defuse', [SuggestController::class, 'defuse'])->name('suggest.refuse');
 
         Route::post('/products/{product}/image', [ImageProductController::class, 'store'])->name('image.store');
         Route::delete('/products/{id}/image', [ImageProductController::class, 'destroy'])->name('image.destroy');

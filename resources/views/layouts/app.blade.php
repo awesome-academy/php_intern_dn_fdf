@@ -22,6 +22,7 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/client/tiny-slider.css') }}" rel="stylesheet">
 
     <link href="{{ asset('css/client/alllib.css') }}" rel="stylesheet">
 </head>
@@ -44,6 +45,7 @@
     @include('partials.forgot')
     @include('partials.cart')
     @include('partials.favorite')
+    @include('partials.notify')
 
     <a href="#" id="back-to-top" title="Back to top" style="display: none;"><i class="fas fa-plane"
             aria-hidden="true"></i></a>
@@ -51,6 +53,7 @@
     <script src="{{ asset('js/client/jquery.min.js') }}"></script>
     <script src="{{ asset('js/client/bootstrap.min.js') }}" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="{{ asset('js/client/alllib.js') }}"></script>
+    <script src="{{ asset('js/client/tiny-slider.js') }}"></script>
 	<script src="{{ asset('js/client/home.js') }}"></script>
 </body>
 

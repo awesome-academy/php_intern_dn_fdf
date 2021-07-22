@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use Illuminate\Http\Request;
+use App\Events\SendMailOrderUser;
 use Illuminate\Support\Facades\Auth;
+use App\Notifications\UserSubmitOrderNotification;
 
 class OrderController extends Controller
 {
@@ -36,6 +38,10 @@ class OrderController extends Controller
 
         $order->status = config('app.status_order.cancel');
         $order->save();
+
+        event(new SendMailOrderUser($order));
+        Auth::guard('web')->user()
+        ->notify(new UserSubmitOrderNotification($order, trans('homepage.message_order_cancel')));
 
         $order->totalPrice = $order->total_price;
 

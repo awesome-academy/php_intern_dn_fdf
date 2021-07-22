@@ -6,9 +6,13 @@ use Throwable;
 use App\Models\Cart;
 use App\Models\City;
 use Illuminate\Http\Request;
+use App\Models\Admin;
+use App\Events\SendMailOrderUser;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\CheckoutRequest;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\UserSubmitOrderNotification;
 
 class CheckoutController extends Controller
 {
@@ -53,6 +57,12 @@ class CheckoutController extends Controller
             }
 
             // send mail
+            event(new SendMailOrderUser($order));
+
+            Auth::guard('web')->user()
+            ->notify(new UserSubmitOrderNotification($order, trans('homepage.message_order_pending')));
+
+            Notification::send(Admin::all(), new UserSubmitOrderNotification($order, ''));
 
             DB::commit();
 

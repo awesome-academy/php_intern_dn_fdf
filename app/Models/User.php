@@ -59,8 +59,7 @@ class User extends Authenticatable
 
     public function suggestProducts()
     {
-        return $this->belongsToMany(Category::class, 'suggest_products', 'user_id', 'cate_id')
-                    ->withPivot('name', 'status')->withTimestamps();
+        return $this->hasMany(Suggest::class);
     }
 
     public function orders()
@@ -87,5 +86,33 @@ class User extends Authenticatable
     public function getCountFavorite()
     {
         return $this->favoriteProducts->count();
+    }
+    /**
+     * Get the oauth providers.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function oauthProviders()
+    {
+        return $this->hasMany(OAuthProvider::class);
+    }
+
+    public function getIsLoginOauthAttribute()
+    {
+        if ($this->oauthProviders->count() > 0) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function getCountFavoriteAttribute()
+    {
+        return $this->favoriteProducts->count();
+    }
+
+    public function getCountNotifyUnReadAttribute()
+    {
+        return $this->notifications()->where('read_at', null)->count();
     }
 }

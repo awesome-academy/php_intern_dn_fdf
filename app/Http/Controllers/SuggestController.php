@@ -19,7 +19,8 @@ class SuggestController extends Controller
 
     public function store(SuggestRequest $request)
     {
-        $request->user()->suggestProducts()->attach($request->cate, [
+        $request->user()->suggestProducts()->create([
+            'cate_id' => $request->cate,
             'name' => $request->product,
             'status' => config('app.status_suggest.pending'),
         ]);
