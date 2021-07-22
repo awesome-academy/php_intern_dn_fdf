@@ -38,6 +38,12 @@ Route::namespace('Admin')->name('admin.')->group(function () {
 
         Route::resource('products', '\App\Http\Controllers\Admin\ProductController');
 
+        Route::resource('orders', '\App\Http\Controllers\Admin\OrderController')->only([
+            'index',
+            'show',
+            'update',
+        ]);
+
         Route::post('/products/{product}/image', [ImageProductController::class, 'store'])->name('image.store');
         Route::delete('/products/{id}/image', [ImageProductController::class, 'destroy'])->name('image.destroy');
     });

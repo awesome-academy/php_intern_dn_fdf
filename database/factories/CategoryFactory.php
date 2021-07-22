@@ -24,8 +24,8 @@ class CategoryFactory extends Factory
         return [
             'name' => $this->faker->name,
             'description' => $this->faker->paragraph,
-            'type' => rand(0, 1),
-            'parent_id' => rand(1, 10) // we fatory 20 category
+            'parent_id' => rand(1, 10), // we fatory 20 category
+            'type' => rand(0, 1)
         ];
     }
 }
