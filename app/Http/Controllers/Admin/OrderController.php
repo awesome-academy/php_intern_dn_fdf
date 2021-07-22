@@ -2,20 +2,19 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Repositories\User\IUserRepository;
-use Exception;
+use App\Http\Requests\OrderRequest;
+use App\Models\Order;
+use App\Repositories\Order\IOrderRepository;
+use Illuminate\Http\Request;
 
-class UserController extends Controller
+class OrderController extends Controller
 {
-    protected $userRepository;
+    protected $orderRepository;
 
-    public function __construct(IUserRepository $userRepository)
+    public function __construct(IOrderRepository $orderRepository)
     {
-        $this->userRepository = $userRepository;
+        $this->orderRepository = $orderRepository;
     }
     /**
      * Display a listing of the resource.
@@ -24,9 +23,9 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = $this->userRepository->all();
+        $orders = $this->orderRepository->all();
 
-        return view('admin.users.index', compact('users'));
+        return view('admin.orders.index', compact('orders'));
     }
 
     /**
@@ -53,21 +52,21 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function show(User $user)
+    public function show(Order $order)
     {
-        return view('admin.users.show', compact('user'));
+        return view('admin.orders.show', compact('order'));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function edit(User $user)
+    public function edit(Order $order)
     {
         //
     }
@@ -76,34 +75,28 @@ class UserController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, User $user)
+    public function update(OrderRequest $request, Order $order)
     {
-        //
+        if ($request->old_status !== config('app.status_order.pending')) {
+            return redirect()->back()->with('error-message', trans('order.no_access'));
+        } else {
+            $this->orderRepository->update($order->id, $request->all());
+
+            return redirect()->back()->with('message', trans('order.update_order_success'));
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function destroy(User $user)
+    public function destroy(Order $order)
     {
-        DB::beginTransaction();
-
-        try {
-            $this->userRepository->delete($user->id);
-
-            DB::commit();
-
-            return response()->json([
-                'message' => trans('users.message_delete_success'),
-            ], 200);
-        } catch (Exception $e) {
-            DB::rollBack();
-        }
+        //
     }
 }
