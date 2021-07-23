@@ -4,10 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\Cart;
 use App\Models\Product;
+use App\Repositories\Cart\ICartRepository;
 use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
+    protected $cartRepository;
+
+    public function __construct(ICartRepository $cartRepository)
+    {
+        $this->cartRepository = $cartRepository;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -36,15 +44,7 @@ class CartController extends Controller
      */
     public function store(Request $request, Product $product)
     {
-        if (session()->has('cart')) {
-            $cart = new Cart(session()->get('cart'));
-        } else {
-            $cart = new Cart();
-        }
-
-        $cart->add($product, $request->quantity);
-
-        session()->put('cart', $cart);
+        $cart = $this->cartRepository->addCart($product->id, $request->quantity);
 
         return response()->json([
             'product' => session()->get('cart')->items[$product->id],
@@ -73,9 +73,7 @@ class CartController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        $cart = new Cart(session()->get('cart'));
-        $cart->updateCart($product->id, $request->quantity);
-        session()->put('cart', $cart);
+        $cart = $this->cartRepository->updateCart($product->id, $request->quantity);
 
         return response()->json([
             'product' => session()->get('cart')->items[$product->id],
@@ -92,9 +90,7 @@ class CartController extends Controller
      */
     public function destroy(Product $product)
     {
-        $cart = new Cart(session()->get('cart'));
-        $cart->remove($product->id);
-        session()->put('cart', $cart);
+        $cart = $this->cartRepository->removeCart($product->id);
 
         return response()->json([
             'totalPrice' => $cart->totalPrice,

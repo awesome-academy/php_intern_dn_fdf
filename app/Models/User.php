@@ -87,4 +87,13 @@ class User extends Authenticatable
     {
         return $this->favoriteProducts->count();
     }
+    /**
+     * Get the oauth providers.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function oauthProviders()
+    {
+        return $this->hasMany(OAuthProvider::class);
+    }
 }
