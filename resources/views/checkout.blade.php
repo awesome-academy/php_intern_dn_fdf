@@ -54,9 +54,9 @@
                                     <div class="icon"><span class="ion-ios-arrow-down"></span></div>
                                     <select id="cityInputCheckout" name="city" class="form-control">
                                         <option class="text-dark" value="">@lang('checkout.not_chose')</option>
-                                        @foreach ($data as $key => $value)
-                                            <option class="text-dark" value="{{ $value }}"
-                                                {{ $value == $user->city ? 'selected' : '' }}>{{ $value }}
+                                        @foreach ($cities as $city)
+                                            <option class="text-dark" value="{{ $city->name }}"
+                                                {{ $city->name == $user->city ? 'selected' : '' }}>{{ $city->name }}
                                             </option>
                                         @endforeach
                                     </select>

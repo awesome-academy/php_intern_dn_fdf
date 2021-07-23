@@ -14,7 +14,7 @@ const mix = require('laravel-mix');
  mix.js([
         'resources/js/app.js',
         'resources/js/admin.js',
-]   , 'public/js')
+    ], 'public/js')
     .js('resources/js/client/home.js', 'public/js/client')
     .js('resources/js/admin/home.js', 'public/js/admin')
     .js(['resources/js/client/lib/popper.min.js',
@@ -25,6 +25,7 @@ const mix = require('laravel-mix');
         'resources/js/client/lib/custom.js',
         'resources/js/client/lib/form-validator.min.js',
     ], 'public/js/client/alllib.js')
+    .copy('resources/js/client/lib/tiny-slider.js', 'public/js/client/')
     .copy('resources/js/client/lib/jquery.min.js', 'public/js/client/')
     .copy('resources/js/client/lib/bootstrap.min.js', 'public/js/client/')
     .sass('resources/sass/app.scss', 'public/css')
@@ -33,6 +34,7 @@ const mix = require('laravel-mix');
         'resources/css/main.css',
         'resources/css/dashboard.css',
     ], 'public/css/style.css')
+    .copy('resources/css/lib/tiny-slider.css', 'public/css/client/')
     .styles([
         'resources/css/lib/animate.css',
         'resources/css/lib/baguetteBox.min.css',
