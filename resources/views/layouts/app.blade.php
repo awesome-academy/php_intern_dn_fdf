@@ -22,6 +22,7 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/client/tiny-slider.css') }}" rel="stylesheet">
 
     <link href="{{ asset('css/client/alllib.css') }}" rel="stylesheet">
 </head>
@@ -51,6 +52,7 @@
     <script src="{{ asset('js/client/jquery.min.js') }}"></script>
     <script src="{{ asset('js/client/bootstrap.min.js') }}" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="{{ asset('js/client/alllib.js') }}"></script>
+    <script src="{{ asset('js/client/tiny-slider.js') }}"></script>
 	<script src="{{ asset('js/client/home.js') }}"></script>
 </body>
 

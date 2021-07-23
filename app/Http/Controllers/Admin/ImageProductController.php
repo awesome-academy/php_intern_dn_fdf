@@ -9,9 +9,16 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\File;
 use App\Http\Requests\ImageProductRequest;
+use App\Repositories\ProductImage\IProductImageRepository;
 
 class ImageProductController extends Controller
 {
+    protected $productImageRepository;
+
+    public function __construct(IProductImageRepository $productImageRepository)
+    {
+        $this->productImageRepository = $productImageRepository;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -40,18 +47,16 @@ class ImageProductController extends Controller
      */
     public function store(ImageProductRequest $request, Product $product)
     {
-        $image = $request->image;
+        try {
+            $this->productImageRepository->storeImageOfProduct($request->all(), $product->id);
 
-        $image_path = 'image_product/' . time() . '.' . $image->getClientOriginalExtension();
-        $path = public_path('/storage/image_product');
-        $image->move($path, $image_path);
-
-        $product->images()->create([
-            'image_path' => $image_path,
-        ]);
-
-        return redirect()->route('admin.products.edit', $product->id)
-                        ->with('message', trans('products.message_add_image_success'));
+            return redirect()->route('admin.products.edit', $product->id)
+                ->with('message', trans('products.message_add_image_success'));
+        } catch (Throwable $th) {
+            dd($th);
+            return redirect()->route('admin.products.edit', $product->id)
+                ->with('error', trans('products.message_add_image_fail'));
+        }
     }
 
     /**
@@ -98,13 +103,7 @@ class ImageProductController extends Controller
     {
 
         try {
-            $productImage = ProductImage::find($id);
-
-            if (File::exists(public_path('storage/' . $productImage->image_path))) {
-                File::delete(public_path('storage/' . $productImage->image_path));
-            }
-
-            $productImage->delete();
+            $this->productImageRepository->delete($id);
 
             return response()->json([
                 'message' => trans('products.message_delete_image_success'),
