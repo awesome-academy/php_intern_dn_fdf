@@ -6,10 +6,17 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Repositories\User\IUserRepository;
 use Exception;
 
 class UserController extends Controller
 {
+    protected $userRepository;
+
+    public function __construct(IUserRepository $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -17,10 +24,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::withCount([
-            'orders',
-            'suggestProducts',
-        ])->paginate(config('app.number_paginate'));
+        $users = $this->userRepository->all();
 
         return view('admin.users.index', compact('users'));
     }
@@ -91,15 +95,7 @@ class UserController extends Controller
         DB::beginTransaction();
 
         try {
-            $user->suggestProducts()->delete();
-
-            $user->ratings()->delete();
-
-            $user->favoriteProducts()->delete();
-
-            $user->orders()->delete();
-
-            $user->delete();
+            $this->userRepository->delete($user->id);
 
             DB::commit();
 

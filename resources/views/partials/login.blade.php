@@ -53,13 +53,13 @@
                     <hr>
                     <div class="form-group row mb-0">
                         <div class="col-md-8 d-flex flex-column justify-content-center m-auto">
-                            <a class="btn btn-primary cursor" href="">
-                                @lang('auth.login-fb')
+                            <a class="btn btn-primary cursor" href="{{ route('social.facebook.callback', 'facebook') }}">
+                                @lang('auth.login_fb')
                             </a>
 
                             @if (Route::has('password.request'))
                                 <a class="btn btn-link" data-dismiss="modal" data-toggle="modal" data-target="#modalRegister">
-                                    @lang('auth.dont-have-account')
+                                    @lang('auth.dont_have_account')
                                 </a>
                             @endif
                         </div>

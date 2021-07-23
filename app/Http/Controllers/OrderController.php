@@ -3,41 +3,38 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Repositories\Order\IOrderRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
+    protected $orderRepository;
+
+    public function __construct(IOrderRepository $orderRepository)
+    {
+        $this->orderRepository = $orderRepository;
+    }
+
     public function index()
     {
-        $orders = Auth::guard('web')->user()->orders;
+        $orders = $this->orderRepository->getAllOrderOfCurrentUser();
 
         return view('orders.order', compact('orders'));
     }
 
     public function getByType($type)
     {
-        if ($type === config('app.get_total')) {
-            $orders = Auth::guard('web')->user()->orders;
-        } else {
-            $orders = Auth::guard('web')->user()->orders()->where('status', $type)->get();
-        }
-
-        foreach ($orders as $order) {
-            $order->totalPrice = $order->total_price;
-        }
+        $orders = $this->orderRepository->getOrderByType($type);
 
         return response()->json($orders, 200);
     }
 
-    public function cancelOrder(Request $request, Order $order)
+    public function cancelOrder(Order $order)
     {
         $this->authorize('cancelOrder', $order);
 
-        $order->status = config('app.status_order.cancel');
-        $order->save();
-
-        $order->totalPrice = $order->total_price;
+        $order = $this->orderRepository->cancelOrderOfCurrentUser($order->id);
 
         return response()->json($order, 200);
     }
