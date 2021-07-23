@@ -135,4 +135,48 @@ $(document).ready(function () {
         });
     });
 
+    // suggest
+    $('.btn-suggest').on('click', function () {
+        var id = $(this).data('id');
+
+        $.ajax({
+            method: 'GET',
+            url: '/admin/suggests/' + id,
+            success: function (data) {
+                $('#cateInputSuggest').val(data.category.id);
+                $('#nameInputSuggest').val(data.name);
+                $('#suggestForm').attr('data-id', data.id);
+            }
+        })
+    });
+
+    $('#suggestForm').on('submit', function (e) {
+        e.preventDefault();
+        var id = $(this).data('id');
+        let formData = $(this).serializeArray();
+        $(".invalid-feedback").children("strong").text("");
+        $("#suggestForm input").removeClass("is-invalid");
+        $.ajax({
+            method: "PUT",
+            headers: {
+                Accept: "application/json"
+            },
+            url: '/admin/suggests/' + id + '/approve',
+            data: formData,
+            success: (data) => window.location.reload(),
+            error: (response) => {
+                $("#loginForm #passwordInput").val('');
+                if (response.status === 422) {
+                    let errors = response.responseJSON.errors;
+                    Object.keys(errors).forEach(function (key) {
+                        $("#" + key + "InputSuggest").addClass("is-invalid");
+                        $("#" + key + "ErrorSuggest").children("strong").text(errors[key][0]);
+                    });
+                } else {
+                    // window.location.reload();
+                    console.logog(1)
+                }
+            }
+        })
+    });
 });

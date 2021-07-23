@@ -8,9 +8,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CategoryRequest;
+use App\Repositories\Category\ICategoryRepository;
 
 class CategoryController extends Controller
 {
+    protected $categoryRepository;
+
+    public function __construct(ICategoryRepository $categoryRepository)
+    {
+        $this->categoryRepository = $categoryRepository;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -18,8 +25,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::withCount('products')
-                    ->paginate(config('app.number_paginate'));
+        $categories = $this->categoryRepository->all();
 
         return view('admin.categories.index', compact('categories'));
     }
@@ -31,7 +37,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        $categories = Category::isParent()->get();
+        $categories = $this->categoryRepository->getAllParentCategory();
 
         return view('admin.categories.add', compact('categories'));
     }
@@ -45,14 +51,7 @@ class CategoryController extends Controller
     public function store(CategoryRequest $request)
     {
         try {
-            $value_parent = $request->type == '0' ? null : $request->parent;
-
-            Category::create([
-                'name' => $request->name,
-                'description' => $request->description,
-                'parent_id' => $value_parent,
-                'type' => $request->type,
-            ]);
+            $this->categoryRepository->create($request->all());
 
             return redirect()->route('admin.categories.index')
                             ->with('message', trans('categories.message_create_success'));
@@ -81,7 +80,7 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
-        $categories = Category::isParent()->get();
+        $categories = $this->categoryRepository->getAllParentCategory();
 
         return view('admin.categories.edit', compact('category', 'categories'));
     }
@@ -96,11 +95,7 @@ class CategoryController extends Controller
     public function update(CategoryRequest $request, Category $category)
     {
         try {
-            $category->name = $request->name;
-            $category->description = $request->description;
-            $category->parent_id = $request->parent;
-            $category->type = $request->type;
-            $category->save();
+            $this->categoryRepository->update($category->id, $request->all());
 
             return redirect()->route('admin.categories.index')
                             ->with('message', trans('categories.message_update_success'));
@@ -121,15 +116,7 @@ class CategoryController extends Controller
         DB::beginTransaction();
 
         try {
-            $category->suggestProducts()->delete();
-
-            foreach ($category->products as $product) {
-                $product->images->delete();
-            }
-
-            $category->products()->delete();
-
-            $category->delete();
+            $this->categoryRepository->delete($category->id);
 
             DB::commit();
 

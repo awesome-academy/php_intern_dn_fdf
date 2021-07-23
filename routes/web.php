@@ -1,19 +1,20 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MenuController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\LocaleController;
+use App\Http\Controllers\SearchController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SuggestController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\FavoriteController;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\LocaleController;
-use App\Http\Controllers\MenuController;
-use App\Http\Controllers\OrderController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\SearchController;
-use App\Http\Controllers\SuggestController;
+use App\Http\Controllers\Auth\OAuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -68,3 +69,6 @@ Route::get('/search/{word}', [SearchController::class, 'searchProductByName']);
 Auth::routes();
 
 Route::get('change/{locale}', [LocaleController::class, 'index'])->name('locale');
+
+Route::get('oauth/{driver}', [OAuthController::class, 'redirectToProvider'])->name('social.facebook.callback');
+Route::get('oauth/{driver}/callback', [OAuthController::class, 'handleProviderCallback']);
