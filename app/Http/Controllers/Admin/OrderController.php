@@ -3,12 +3,19 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\OrderRequest;
+use App\Http\Requests\StatusRequest;
 use App\Models\Order;
+use App\Repositories\Order\IOrderRepository;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
+    protected $orderRepository;
+
+    public function __construct(IOrderRepository $orderRepository)
+    {
+        $this->orderRepository = $orderRepository;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -16,9 +23,7 @@ class OrderController extends Controller
      */
     public function index()
     {
-        $orders = Order::with([
-            'user',
-        ])->withCount('orderDetails')->orderBy('status', 'desc')->paginate(config('app.number_paginate'));
+        $orders = $this->orderRepository->all();
 
         return view('admin.orders.index', compact('orders'));
     }
@@ -73,13 +78,12 @@ class OrderController extends Controller
      * @param  \App\Models\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function update(OrderRequest $request, Order $order)
+    public function update(StatusRequest $request, Order $order)
     {
         if ($request->old_status !== config('app.status_order.pending')) {
             return redirect()->back()->with('error-message', trans('order.no_access'));
         } else {
-            $order->status = $request->status;
-            $order->save();
+            $this->orderRepository->update($order->id, $request->all());
 
             return redirect()->back()->with('message', trans('order.update_order_success'));
         }

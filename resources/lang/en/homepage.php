@@ -75,4 +75,9 @@ return [
     'canceld_order' => 'Cancel order',
     'productd_id' => 'Product ID',
 
+    'interest_products' => 'Interested products',
+    'desc_interested' => 'The products that customers are most interested in',
+
+    'best_selling' => 'Best selling products',
+    'desc_best_selling' => 'The products that customers are most bought',
 ];
