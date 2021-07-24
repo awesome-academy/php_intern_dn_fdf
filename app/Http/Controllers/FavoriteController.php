@@ -3,30 +3,34 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Repositories\User\IUserRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class FavoriteController extends Controller
 {
+    protected $userRepository;
+
+    public function __construct(IUserRepository $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
+
     public function index(Request $request)
     {
-        $favorites = $request->user()->favoriteProducts;
-
-        foreach ($favorites as $favorite) {
-            $favorite->image = $favorite->first_image;
-        }
+        $favorites = $this->userRepository->getAllFavoriteOfCurrentUser();
 
         return response()->json($favorites, 200);
     }
 
     public function storeFavorite(Request $request, Product $product)
     {
-        if ($request->user()->favoriteProducts->where('id', $product->id)->count() > 0) {
+        if ($this->userRepository->checkListFavoriteHasThisProduct($product->id)) {
             return response()->json([
                 'message_exist' => trans('homepage.exist_product'),
             ], 200);
         } else {
-            $request->user()->favoriteProducts()->attach($product);
+            $this->userRepository->addProductToListFavorite($product->id);
 
             return response()->json([
                 'message_success' => trans('homepage.add_favorite_success'),
@@ -36,8 +40,8 @@ class FavoriteController extends Controller
 
     public function destroy(Request $request, Product $product)
     {
-        if ($request->user()->favoriteProducts->where('id', $product->id)->count() > 0) {
-            $request->user()->favoriteProducts()->detach($product);
+        if ($this->userRepository->checkListFavoriteHasThisProduct($product->id)) {
+            $this->userRepository->removeProductFromListFavorite($product->id);
 
             return response()->json([
                 'message_success' => trans('homepage.remove_favorite_success'),
