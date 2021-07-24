@@ -138,4 +138,52 @@
     </div>
 </div>
 <!-- End Menu -->
+
+<div class="gallery-box">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="heading-title text-center">
+                    <h2>@lang('homepage.interest_products')</h2>
+                    <p>@lang('homepage.desc_interested')</p>
+                </div>
+            </div>
+        </div>
+        <div class="tz-gallery">
+            <div class="row">
+                @foreach ($product_trend as $product)
+                    <div class="col-sm-12 col-md-4 col-lg-4">
+                        <a class="lightbox" href="{{ route('products.show', $product->id) }}">
+                            <img class="img-fluid" src="/storage/{{ $product->first_image }}" alt="Gallery Images">
+                        </a>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="gallery-box">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="heading-title text-center">
+                    <h2>@lang('homepage.best_selling')</h2>
+                    <p>@lang('homepage.desc_best_selling')</p>
+                </div>
+            </div>
+        </div>
+        <div class="tz-gallery">
+            <div class="row">
+                @foreach ($product_best_selling as $product)
+                    <div class="col-sm-12 col-md-4 col-lg-4">
+                        <a class="lightbox" href="{{ route('products.show', $product->id) }}">
+                            <img class="img-fluid" src="/storage/{{ $product->first_image }}" alt="Gallery Images">
+                        </a>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
