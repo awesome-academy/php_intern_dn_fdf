@@ -13,10 +13,12 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Application Avatar Path
+    | Application Number Of litmit product in home
     |--------------------------------------------------------------------------
     |
     */
+
+    'number_limit_product' => '6',
 
     'avatar_path' => 'avatar_path',
 
@@ -35,7 +37,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Application Status of Order
+    | Application Name to get all order of current user
     |--------------------------------------------------------------------------
     |
     */
@@ -50,9 +52,14 @@ return [
     */
 
     'status_suggest' => [
-        'done' => 'Done',
+        'approve' => 'Approve',
         'pending' => 'Pending',
         'refuse' => 'Refuse',
+    ],
+
+    'type_notify' => [
+        'read' => 'Read',
+        'unread' => 'Unread',
     ],
 
     /*
