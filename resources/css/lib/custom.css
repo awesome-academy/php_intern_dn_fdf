@@ -11,7 +11,7 @@
 }
 
 .main-1 {
-    padding: 100px;
+    padding: 100px 0px;
 }
 
 .btn-grey{
@@ -320,4 +320,12 @@
   position: absolute;
   top: 3px;
   right: -3px;
+}
+
+.toast {
+  position: fixed;
+  z-index: 10;
+  top: 5rem;
+  right: 1rem;
+  width: 300px;
 }
