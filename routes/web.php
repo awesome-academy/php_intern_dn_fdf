@@ -1,19 +1,21 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MenuController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\LocaleController;
+use App\Http\Controllers\SearchController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SuggestController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\FavoriteController;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\LocaleController;
-use App\Http\Controllers\MenuController;
-use App\Http\Controllers\OrderController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\SearchController;
-use App\Http\Controllers\SuggestController;
+use App\Http\Controllers\Auth\OAuthController;
+use App\Http\Controllers\NotifyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -59,6 +61,8 @@ Route::middleware('auth:web')->group(function () {
     Route::get('/order/{order}', [OrderController::class, 'show'])->name('order.show');
     Route::get('/order/{type}/type', [OrderController::class, 'getByType']);
     Route::put('/order/{order}', [OrderController::class, 'cancelOrder']);
+
+    Route::get('/notifications/order', [NotifyController::class, 'getNotifyOrder']);
 });
 
 Route::get('/category/{category}/child', [CategoryController::class, 'getChildCate']);
@@ -68,3 +72,6 @@ Route::get('/search/{word}', [SearchController::class, 'searchProductByName']);
 Auth::routes();
 
 Route::get('change/{locale}', [LocaleController::class, 'index'])->name('locale');
+
+Route::get('oauth/{driver}', [OAuthController::class, 'redirectToProvider'])->name('social.callback');
+Route::get('oauth/{driver}/callback', [OAuthController::class, 'handleProviderCallback']);

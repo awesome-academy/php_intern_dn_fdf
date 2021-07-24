@@ -2,13 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\SuggestRequest;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\SuggestRequest;
+use App\Repositories\Suggest\ISuggestRepository;
 
 class SuggestController extends Controller
 {
+    protected $suggestRepository;
+
+    public function __construct(ISuggestRepository $suggestRepository)
+    {
+        $this->suggestRepository = $suggestRepository;
+    }
+
     public function index()
     {
         $user = Auth::guard('web')->user();
@@ -19,10 +27,7 @@ class SuggestController extends Controller
 
     public function store(SuggestRequest $request)
     {
-        $request->user()->suggestProducts()->attach($request->cate, [
-            'name' => $request->product,
-            'status' => config('app.status_suggest.pending'),
-        ]);
+        $this->suggestRepository->addSuggest($request->all());
 
         return response()->json([
             'message' => trans('homepage.suggest_succes'),

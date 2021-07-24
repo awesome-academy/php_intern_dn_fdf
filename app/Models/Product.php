@@ -100,4 +100,14 @@ class Product extends Model
 
         return $ratings;
     }
+
+    public function scopeIsTrend($query)
+    {
+        $query->withCount('ratings')->orderBy('ratings_count', 'desc');
+    }
+
+    public function scopeBestSelling($query)
+    {
+        $query->withCount('orderDetails')->orderBy('order_details_count', 'desc');
+    }
 }

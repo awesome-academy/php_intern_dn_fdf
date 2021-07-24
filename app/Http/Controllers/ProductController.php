@@ -5,10 +5,17 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Http\Requests\RatingRequest;
+use App\Repositories\Product\IProductRepository;
 use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
+    protected $productRepository;
+
+    public function __construct(IProductRepository $productRepository)
+    {
+        $this->productRepository = $productRepository;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -65,19 +72,14 @@ class ProductController extends Controller
             ], 401);
         }
 
-        $request->user()->ratings()->attach($product->id, [
-            'num_rated' => $request->rating,
-            'content' => $request->content,
-        ]);
+        $rating = $this->productRepository->createRating($request->all(), $product->id);
 
-        $ratings = $product->ratings()->get()->first();
-
-        return response()->json($ratings, 200);
+        return response()->json($rating, 200);
     }
 
     public function getSpecifyRating(Product $product, $num_rate)
     {
-        $ratings = $product->getSpecifyRating($num_rate);
+        $ratings = $this->productRepository->getSpecifyRating($product->id, $num_rate);
 
         return response()->json($ratings, 200);
     }

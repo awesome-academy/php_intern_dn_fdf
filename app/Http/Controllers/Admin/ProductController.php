@@ -9,9 +9,22 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductRequest;
+use App\Repositories\Category\ICategoryRepository;
+use App\Repositories\Product\IProductRepository;
 
 class ProductController extends Controller
 {
+    protected $productRepository;
+
+    protected $categoryRepository;
+
+    public function __construct(
+        IProductRepository $productRepository,
+        ICategoryRepository $categoryRepository
+    ) {
+        $this->productRepository = $productRepository;
+        $this->categoryRepository = $categoryRepository;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -19,10 +32,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::withCount([
-            'ratings',
-            'images',
-        ])->paginate(config('app.number_paginate'));
+        $products = $this->productRepository->all();
 
         return view('admin.products.index', compact('products'));
     }
@@ -34,7 +44,7 @@ class ProductController extends Controller
      */
     public function create()
     {
-        $categories = Category::isChild()->get();
+        $categories = $this->categoryRepository->getAllChildCategory();
 
         return view('admin.products.add', compact('categories'));
     }
@@ -48,12 +58,7 @@ class ProductController extends Controller
     public function store(ProductRequest $request)
     {
         try {
-            Product::create([
-                'cate_id' => $request->cate,
-                'name' => $request->name,
-                'price' => $request->price,
-                'description' => $request->description,
-            ]);
+            $this->productRepository->create($request->all());
 
             return redirect()->route('admin.products.index')->with('message', trans('products.message_create_success'));
         } catch (Throwable $e) {
@@ -80,7 +85,7 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        $categories = Category::isChild()->get();
+        $categories = $this->categoryRepository->getAllChildCategory();
 
         return view('admin.products.edit', compact('product', 'categories'));
     }
@@ -95,11 +100,7 @@ class ProductController extends Controller
     public function update(ProductRequest $request, Product $product)
     {
         try {
-            $product->cate_id = $request->cate;
-            $product->description = $request->description;
-            $product->name = $request->name;
-            $product->price = $request->price;
-            $product->save();
+            $this->productRepository->update($product->id, $request->all());
 
             return redirect()->route('admin.products.index')->with('message', trans('products.message_update_success'));
         } catch (Throwable $e) {
@@ -118,15 +119,7 @@ class ProductController extends Controller
         DB::beginTransaction();
 
         try {
-            $product->images()->delete();
-
-            $product->ratings()->delete();
-
-            $product->favoriteProducts()->delete();
-
-            $product->orderDetails()->delete();
-
-            $product->delete();
+            $this->productRepository->delete($product->id);
 
             DB::commit();
 
