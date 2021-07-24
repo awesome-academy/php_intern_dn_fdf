@@ -4,25 +4,34 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\Category;
+use App\Repositories\Category\ICategoryRepository;
+use App\Repositories\Product\IProductRepository;
 use Illuminate\Http\Request;
 
 class MenuController extends Controller
 {
+    protected $categoryRepository;
+
+    protected $productRepository;
+
+    public function __construct(
+        ICategoryRepository $categoryRepository,
+        IProductRepository $productRepository
+    ) {
+        $this->categoryRepository = $categoryRepository;
+        $this->productRepository = $productRepository;
+    }
+
     public function index()
     {
-        $categories = Category::isParent()->get();
+        $categories = $this->categoryRepository->getAllParentCategory();
 
         return view('menu', compact('categories'));
     }
 
     public function getProductById($id)
     {
-        $products = Product::ofCategory($id)->get();
-
-        foreach ($products as $product) {
-            $product->image = $product->first_image;
-            $product->avg_rating = $product->avg_rating;
-        }
+        $products = $this->productRepository->getAllByCategory($id);
 
         return response()->json($products, 200);
     }

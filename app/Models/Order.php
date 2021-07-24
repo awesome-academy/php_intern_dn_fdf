@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Order extends Model
 {
@@ -34,5 +35,20 @@ class Order extends Model
         }
 
         return $total;
+    }
+
+    public function scopeGetAllPending($query)
+    {
+        $query->where('status', config('app.status_order.pending'));
+    }
+
+    public function scopeGetAllToday($query)
+    {
+        $query->whereDate('created_at', Carbon::today());
+    }
+
+    public function scopeGetAllByStatusToday($query, $status)
+    {
+        $query->whereDate('created_at', Carbon::today())->where('status', $status);
     }
 }

@@ -13,7 +13,9 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        'App\Console\Commands\SendNotifyOrderIsPendingForAdminCommand',
+        'App\Console\Commands\SendMailToAllAdminAboutAllOrderNoApproveCommand',
+        'App\Console\Commands\SendMailRemindUserOrder',
     ];
 
     /**
@@ -24,7 +26,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        $schedule->command('notify:send')->everyThirtyMinutesMinute();
+        $schedule->command('mail:send-admin')->daily()->at('17:00');
+        $schedule->command('mail:remind-user')->daily();
     }
 
     /**

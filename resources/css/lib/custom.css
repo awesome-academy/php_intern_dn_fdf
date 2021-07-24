@@ -11,7 +11,7 @@
 }
 
 .main-1 {
-    padding: 100px;
+    padding: 100px 0px;
 }
 
 .btn-grey{
@@ -320,4 +320,12 @@
   position: absolute;
   top: 3px;
   right: -3px;
+}
+
+.toast_order_user {
+  position: fixed;
+  top: 5rem;
+  z-index: -1;
+  right: 1rem;
+  width: 300px;
 }
