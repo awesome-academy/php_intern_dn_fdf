@@ -680,4 +680,40 @@ $(document).ready(function () {
             }
         })
     });
+
+    var slider = tns({
+        arrowKeys: true,
+        container: ".js-sliderImageViewer",
+        controls: false,
+        loop: false,
+        mouseDrag: true,
+        navContainer: ".js-imageViewerNav",
+    });
+
+    $('#modalNotifyOpen').on('click', function () {
+        $.ajax({
+            method: 'GET',
+            url: '/notifications/order',
+            success: function (data) {
+                var html = '';
+                if (Object.keys(data).length > 0) {
+                    Object.keys(data).forEach(key => {
+                        html += '<div class="row curs">' +
+                                '<div class="col-sm-10">' +
+                                '<div class="d-flex">' +
+                                '<a href="/order/'+ data[key].data['order']['id'] +'">#'+ data[key].data['order']['id'] +' '+ data[key].data['order']['status'] +'</a>' +
+                                '</div>' +
+                                '<p>'+ data[key].data['message'] +'</p>' +
+                                '</div>' +
+                                '<div class="col-sm-2">' +
+                                '<i class="far fa-bell"></i>' +
+                                '</div>' +
+                                '</div>'
+                    });
+                }
+                $('#list_notify').html(html);
+                $('#nav_count_noti').text(0);
+            }
+        })
+    });
 });

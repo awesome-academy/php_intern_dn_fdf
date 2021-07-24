@@ -9,44 +9,36 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\ProfileInfoRequest;
 use App\Http\Requests\ProfilePassRequest;
+use App\Repositories\User\IUserRepository;
 
 class ProfileController extends Controller
 {
+    protected $userRepository;
+
+    public function __construct(IUserRepository $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
+
     public function index()
     {
         $cities = City::select('name')->get();
 
-        $user = Auth::guard('web')->user();
+        $user = $this->userRepository->currentUser();
 
         return view('profile', compact('user', 'cities'));
     }
 
     public function updateAvatar(Request $request)
     {
-        $avatar = $request->avatar;
-
-        if (File::exists(public_path('storage/' .  Auth::guard('web')->user()->avatar_path))) {
-            File::delete(public_path('storage/' . Auth::guard('web')->user()->avatar_path));
-        }
-
-        $avatar_path = config('app.avatar_path') . '/' . time() . '.' . $avatar->getClientOriginalExtension();
-        $path = public_path('/storage/' . config('app.avatar_path'));
-
-        $avatar->move($path, $avatar_path);
-
-        Auth::guard('web')->user()->avatar_path = $avatar_path;
-        Auth::guard('web')->user()->save();
+        $this->userRepository->updateAvatarCurrentUser($request->all());
 
         return redirect()->route('profile.index');
     }
 
     public function updateInfomation(ProfileInfoRequest $request)
     {
-        Auth::guard('web')->user()->name = $request->name;
-        Auth::guard('web')->user()->phone = $request->phone ?? '';
-        Auth::guard('web')->user()->city = $request->city ?? '';
-        Auth::guard('web')->user()->address = $request->address ?? '';
-        Auth::guard('web')->user()->save();
+        $this->userRepository->updateInfomationCurrentUser($request->all());
 
         return redirect()->back();
     }
@@ -59,8 +51,7 @@ class ProfileController extends Controller
             ], 422);
         }
 
-        Auth::guard('web')->user()->password = Hash::make($request->password);
-        Auth::guard('web')->user()->save();
+        $this->userRepository->updatePasswordCurrentUser($request->all());
 
         return response()->json([
             'message' => trans('users.change_pass_success'),

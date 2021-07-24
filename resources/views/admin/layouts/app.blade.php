@@ -15,7 +15,10 @@
     <!-- Locale Session-->
     <meta name="locale" content="{{ session()->get('locale') }}">
 
-    <title>@lang('auth.title_admin')</title>
+    <!-- Locale Session-->
+    <meta name="id_user" content="{{ Auth::guard('admin')->user()->id ?? '' }}">
+
+    <title>@lang('auth.title-admin')</title>
 
     <script src="{{ asset('js/app.js') }}" defer></script>
 
@@ -54,7 +57,15 @@
                     <a class="nav-link" href="{{ route('admin.orders.index') }}"><i class="fa fa-list-alt fa-sm fa-fw mr-2 text-gray-400"></i><span>@lang('order.orders')</span></a>
                 </li>
 
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('admin.suggests.index') }}"><i class="fa fa-list-alt fa-sm fa-fw mr-2 text-gray-400"></i><span>@lang('suggest.suggests')</span></a>
+                </li>
+
                 <hr class="sidebar-divider">
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('admin.notifications.index') }}"><i class="fa fa-list-alt fa-sm fa-fw mr-2 text-gray-400"></i><span>@lang('notification.notifications')</span> <span class="badge badge-success ml-2" id="nav_count_noti">{{ Auth::guard('admin')->user()->count_notify_unread }}</span></a>
+                </li>
 
                 <li class="nav-item">
                     <a class="nav-link" id="btn_login"><i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i><span>@lang('auth.logout')</span></a>
@@ -104,6 +115,19 @@
             </div>
         </div>
     </div>
+    @include('admin.partials.toast-order')
+
+    <script src="{{ asset('js/client/jquery.min.js') }}"></script>
+    <script src="{{ asset('js/client/bootstrap.min.js') }}"></script>
+    <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+    <script src="{{ asset('js/admin/pusher.js') }}"></script>
     <script src="{{ asset('js/admin/home.js') }}"></script>
+    <!-- Charting library -->
+    <script src="https://unpkg.com/echarts/dist/echarts.min.js"></script>
+    <!-- Chartisan -->
+    <script src="https://unpkg.com/@chartisan/echarts/dist/chartisan_echarts.js"></script>
+
+    <script src="{{ asset('js/admin/chart.js') }}"></script>
+
 </body>
 </html>
