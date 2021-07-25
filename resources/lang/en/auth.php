@@ -51,4 +51,7 @@ return [
     'login_fb' => 'Login with Facebook',
     'dont_have_account' => 'Don\'t have an account?',
 
+    'login_gg' => 'Login with Google',
+    'login_gh' => 'Login with Github',
+
 ];
